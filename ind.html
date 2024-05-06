@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Question Answering</title>
+</head>
+<body>
+    <h1>Visual Question Answering</h1>
+    
+    <input type="file" id="imageUpload" accept="image/*">
+    <br><br>
+    <input type="text" id="questionInput" placeholder="Enter your question...">
+    <br><br>
+    <button onclick="handleSubmit()">Ask Question</button>
+    <br><br>
+    <p id="statusMessage"></p> <!-- Message for indicating status -->
+    <p id="answerOutput"></p>
+
+    <script>
+        async function handleSubmit() {
+            const imageInput = document.getElementById('imageUpload').files[0];
+            const questionInput = document.getElementById('questionInput').value;
+
+            const formData = new FormData();
+            formData.append('image', imageInput);
+            formData.append('text', questionInput);
+
+            // Displaying sending message
+            document.getElementById('statusMessage').innerText = "Sending request to server...";
+            
+            // Logging acknowledgment to the console
+            console.log("Sending request to server...");
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/answer', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                document.getElementById('statusMessage').innerText = ""; // Clearing status message
+                document.getElementById('answerOutput').innerText = "Answer: " + data.Answer;
+            } catch (error) {
+                document.getElementById('statusMessage').innerText = ""; // Clearing status message
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
